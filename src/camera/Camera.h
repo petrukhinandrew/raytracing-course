@@ -17,9 +17,9 @@ public:
 
     void setDimensions(const glm::ivec2 dims) { this->dimensions = dims; }
     void setPosition(const glm::vec3 &position) { this->position = position; }
-    void setRight(const glm::vec3 &right) { this->right = glm::normalize(right); dump("right", this->right); }
-    void setUp(const glm::vec3 &up) { this->up = glm::normalize(up); dump("up", this->up); }
-    void setForward(const glm::vec3 &forward) { this->forward = glm::normalize(forward); dump("fwd", this->forward); }
+    void setRight(const glm::vec3 &right) { this->right = glm::normalize(right); }
+    void setUp(const glm::vec3 &up) { this->up = glm::normalize(up); }
+    void setForward(const glm::vec3 &forward) { this->forward = glm::normalize(forward); }
     void setFovX(float fov_x) { this->fov = glm::vec2{fov_x, 0}; }
 
     void updateFovY(float aspect_ratio)

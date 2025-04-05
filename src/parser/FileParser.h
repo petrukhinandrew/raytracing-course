@@ -75,13 +75,11 @@ public:
             }
             else
             {
-                CommandFactory::createCommand(command, args) -> execute(scene);
+                auto cmd = CommandFactory::createCommand(command, args);
+                if (cmd != nullptr) cmd -> execute(scene);
             }
         }
         scene.updateCameraFovY();
-        for (auto p: scene.primitives) {
-            std::cout<< p->position.x << " " << p->position.y << " " << p->position.z << std::endl;
-        }
         file.close();
     }
 };

@@ -112,7 +112,7 @@ public:
         if (it != commandMap.end()) {
             return it->second(args);
         }
-        std::cout << "cannot parse " << command << std::endl;
+        // std::cout << "cannot parse " << command << std::endl;
         return nullptr; // or throw an exception for unknown command
     }
 

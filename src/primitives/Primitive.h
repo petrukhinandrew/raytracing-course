@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <optional>
 #include "glm.hpp"
 #include "Material.h"
 #include "ray/Ray.h"

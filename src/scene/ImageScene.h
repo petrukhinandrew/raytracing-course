@@ -71,13 +71,6 @@ public:
         return height;
     }
 
-    void setPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b)
-    {
-        if (x >= 0 && x < width && y >= 0 && y < height)
-        {
-            pixels[y][x] = {r, g, b};
-        }
-    }
     ~ImageScene() override
     {
         pixels.clear();

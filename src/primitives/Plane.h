@@ -2,7 +2,7 @@
 
 #include "Primitive.h"
 
-class Plane : public Primitive
+class Plane : public virtual Primitive
 {
 public:
     Plane() : normal({0, 0, 0}) {}
@@ -31,7 +31,7 @@ public:
     PlaneCommand(glm::vec3 n) : normal(n) {}
     void execute(Primitive *primitive) override
     {
-        static_cast<Plane *>(primitive)->normal = normal;
+        dynamic_cast<Plane *>(primitive)->normal = normal;
     }
 
 private:

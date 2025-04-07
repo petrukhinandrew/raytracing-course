@@ -38,7 +38,12 @@ public:
 
     void execute(Primitive *primitive) override
     {
-        primitive->rotation = glm::quat(rotation);
+        primitive->rotation.x = rotation.x;
+        primitive->rotation.y = rotation.y;
+        primitive->rotation.z = rotation.z;
+        primitive->rotation.w = rotation.w;
+
+        primitive->rotation = glm::normalize(primitive->rotation);
         primitive->inv_rotation = glm::conjugate(primitive->rotation);
     }
 

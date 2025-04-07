@@ -105,43 +105,43 @@ private:
 };
 
 class CommandFactory {
-    using commandMapping_t = std::unordered_map<std::string, std::function<std::unique_ptr<Command>(const std::vector<float>&)>>;
+    using commandMapping_t = std::unordered_map<std::string, std::function<Command*(const std::vector<float>&)>>;
 public:
-    static std::unique_ptr<Command> createCommand(const std::string& command, const std::vector<float>& args) {
+    static Command* createCommand(const std::string& command, const std::vector<float>& args) {
         auto it = commandMap.find(command);
         if (it != commandMap.end()) {
             return it->second(args);
         }
         // std::cout << "cannot parse " << command << std::endl;
-        return nullptr; // or throw an exception for unknown command
+        return nullptr;
     }
 
 private:
     static commandMapping_t command_init() {
         commandMapping_t mapping = commandMapping_t();
         mapping["DIMENSIONS"] = [](const std::vector<float>& args) {
-            return std::make_unique<DimensionsCommand>(args[0], args[1]);
+            return new DimensionsCommand(args[0], args[1]);
         };
         mapping["RAY_DEPTH"] = [](const std::vector<float>& args) {
-            return std::make_unique<RayDepthCommand>(args[0]);
+            return new RayDepthCommand(args[0]);
         };
         mapping["BG_COLOR"] = [](const std::vector<float>& args) {
-            return std::make_unique<BgColorCommand>(args[0], args[1], args[2]);
+            return new BgColorCommand(args[0], args[1], args[2]);
         };
         mapping["CAMERA_POSITION"] = [](const std::vector<float>& args) {
-            return std::make_unique<CameraPositionCommand>(glm::vec3(args[0], args[1], args[2]));
+            return new CameraPositionCommand(glm::vec3(args[0], args[1], args[2]));
         };
         mapping["CAMERA_RIGHT"] = [](const std::vector<float>& args) {
-            return std::make_unique<CameraRightCommand>(glm::vec3(args[0], args[1], args[2]));
+            return new CameraRightCommand(glm::vec3(args[0], args[1], args[2]));
         };
         mapping["CAMERA_UP"] = [](const std::vector<float>& args) {
-            return std::make_unique<CameraUpCommand>(glm::vec3(args[0], args[1], args[2]));
+            return new CameraUpCommand(glm::vec3(args[0], args[1], args[2]));
         };
         mapping["CAMERA_FORWARD"] = [](const std::vector<float>& args) {
-            return std::make_unique<CameraForwardCommand>(glm::vec3(args[0], args[1], args[2]));
+            return new CameraForwardCommand(glm::vec3(args[0], args[1], args[2]));
         };
         mapping["CAMERA_FOV_X"] = [](const std::vector<float>& args) {
-            return std::make_unique<CameraFovXCommand>(args[0]);
+            return new CameraFovXCommand(args[0]);
         };
         return mapping;
     }

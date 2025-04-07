@@ -56,27 +56,32 @@ public:
                     iss.ignore();
                 }
             }
-            if (command == "NEW_PRIMITIVE") continue;
+            if (command == "NEW_PRIMITIVE")
+                continue;
 
             auto primitiveCommand = PrimitiveCommandFactory::createCommand(command, args);
             if (primitiveCommand != nullptr)
             {
-                if (command == "ELLIPSOID") {
+                if (command == "ELLIPSOID")
+                {
                     scene.addEllipsoid();
                 }
-                if (command == "PLANE") {
+                if (command == "PLANE")
+                {
                     scene.addPlane();
                 }
-                if (command == "BOX") {
+                if (command == "BOX")
+                {
                     scene.addBox();
                 }
-                
+
                 primitiveCommand->execute(scene.currentPrimitive);
             }
             else
             {
                 auto cmd = CommandFactory::createCommand(command, args);
-                if (cmd != nullptr) cmd -> execute(scene);
+                if (cmd != nullptr)
+                    cmd->execute(scene);
             }
         }
         scene.updateCameraFovY();

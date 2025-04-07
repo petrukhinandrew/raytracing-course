@@ -3,7 +3,7 @@
 #include "Primitive.h"
 #include <glm.hpp>
 
-class Box : public Primitive
+class Box : public virtual Primitive
 {
 public:
     Box() : sizes({0, 0, 0}) {}
@@ -53,7 +53,7 @@ public:
     BoxCommand(const glm::vec3 &s) : sizes(s) {}
     void execute(Primitive* primitive) override
     {
-        static_cast<Box *>(primitive) -> sizes = sizes;
+        dynamic_cast<Box *>(primitive) -> sizes = sizes;
     }
 
 private:

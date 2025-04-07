@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include "parser/FileParser.h"
+#include "glm.hpp"
 #include "scene/ImageScene.h"
 #include "image_writer/NetPbmImageWriter.h"
 

@@ -11,8 +11,8 @@ int main(int argc, char* argv[]) {
     std::string renderPath = argv[2];
     
     auto scene = ImageScene();
-    auto parser = new TextFileParser(scene);
-    parser -> parse(scenePath);
+    auto parser = TextFileParser(scene);
+    parser.parse(scenePath);
     scene.render();
     auto writer = NetpbmImageWriter();
     writer.write(renderPath, scene);

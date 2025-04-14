@@ -56,7 +56,7 @@ public:
 class EllipsoidCommand : public PrimitiveCommand
 {
 public:
-    EllipsoidCommand(glm::vec3 r) : radius(r) {}
+    EllipsoidCommand(const glm::vec3 &r) : radius(r) {}
     void execute(Primitive *primitive) override
     {
         dynamic_cast<Ellipsoid *>(primitive) -> radius = radius;

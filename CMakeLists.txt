@@ -6,6 +6,7 @@ set(CMAKE_C_COMPILER "clang")
 set(CMAKE_CXX_COMPILER "clang++")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CONFIGURATION_TYPES "Release" CACHE STRING "" FORCE)
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 

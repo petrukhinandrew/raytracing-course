@@ -39,7 +39,7 @@ public:
 class PlaneCommand : public PrimitiveCommand
 {
 public:
-    PlaneCommand(glm::vec3 n) : normal(n) {}
+    PlaneCommand(const glm::vec3 &n) : normal(n) {}
     void execute(Primitive *primitive) override
     {
         dynamic_cast<Plane *>(primitive)->normal = normal;

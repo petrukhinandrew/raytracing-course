@@ -10,7 +10,7 @@ public:
     Ellipsoid() : radius({0, 0, 0}) {}
     Ellipsoid(glm::vec3 r) : radius(r) {}
 
-    std::optional<Intersection> intersectWith(Ray r) override
+    std::optional<Intersection> intersectWith(const Ray &r) const override
     {
         Ray ray = r.copyWith(position, inv_rotation);
         glm::vec3 o_div_radius = ray.start_position / radius;

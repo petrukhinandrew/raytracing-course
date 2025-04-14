@@ -21,7 +21,7 @@ public:
     float ior = 1;
     Material material = Material::Diffuse;
 
-    virtual std::optional<Intersection> intersectWith(Ray r) = 0;
+    virtual std::optional<Intersection> intersectWith(const Ray &r) const = 0;
     virtual ~Primitive() = default;
 };
 

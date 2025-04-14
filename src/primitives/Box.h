@@ -8,7 +8,7 @@ class Box : public virtual Primitive
 public:
     Box() : sizes({0, 0, 0}) {}
     Box(const glm::vec3 s) : sizes(s) {}
-    std::optional<Intersection> intersectWith(Ray r) override
+    std::optional<Intersection> intersectWith(const Ray &r) const override
     {
         Ray ray = r.copyWith(position, inv_rotation);
         

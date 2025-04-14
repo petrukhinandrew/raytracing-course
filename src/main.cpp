@@ -6,6 +6,7 @@
 #include "image_writer/NetPbmImageWriter.h"
 
 int main(int argc, char* argv[]) {
+    std::cin.tie(0);
     std::string scenePath = argv[1];
     std::string renderPath = argv[2];
     

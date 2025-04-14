@@ -11,7 +11,7 @@ class LightPositionCommand : public LightSourceCommand
 public:
     LightPositionCommand(glm::vec3 pos) : position(pos) {}
 
-    void execute(LightSource *lightSource) override
+    void execute(LightSource *lightSource) const override
     {
         lightSource->position = position;
         lightSource->kind = LightSourceKind::Positional;
@@ -26,7 +26,7 @@ class LightDirectionCommand : public LightSourceCommand
 public:
     LightDirectionCommand(glm::vec3 dir) : direction(dir) {}
 
-    void execute(LightSource *lightSource) override
+    void execute(LightSource *lightSource) const override
     {
         lightSource->direction = direction;
         lightSource->kind = LightSourceKind::Directional;
@@ -41,7 +41,7 @@ class LightAttenuationCommand : public LightSourceCommand
 public:
     LightAttenuationCommand(glm::vec3 a) : attenuation(a) {}
 
-    void execute(LightSource *lightSource) override
+    void execute(LightSource *lightSource) const override
     {
         lightSource->attenuation = attenuation;
         lightSource->kind = LightSourceKind::Positional;
@@ -57,7 +57,7 @@ class LightIntensityCommand : public LightSourceCommand
 public:
     LightIntensityCommand(glm::vec3 c) : color(c) {}
 
-    void execute(LightSource *lightSource) override
+    void execute(LightSource *lightSource) const override
     {
         lightSource->intensity = color;
     }

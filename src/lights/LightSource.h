@@ -22,6 +22,6 @@ public:
 class LightSourceCommand
 {
 public:
-    virtual void execute(LightSource *lightSource) {}
+    virtual void execute(LightSource *lightSource) const {}
     virtual ~LightSourceCommand() = default;
 };

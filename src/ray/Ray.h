@@ -10,7 +10,7 @@ class Ray
 public:
     Ray(glm::vec3 position, glm::vec3 d) : start_position(position), direction(glm::normalize(d)) {}
 
-    Ray copyWith(glm::vec3 delta, glm::quat rotation)
+    Ray copyWith(glm::vec3 delta, glm::quat rotation) const 
     {
         auto newRay = Ray(rotation * (start_position - delta), rotation * direction);
         newRay.depth = depth;

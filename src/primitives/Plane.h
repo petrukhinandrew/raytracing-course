@@ -8,7 +8,7 @@ public:
     Plane() : normal({0, 0, 0}) {}
     Plane(glm::vec3 n) : normal(n) {}
 
-    std::optional<Intersection> intersectWith(Ray r) override
+    std::optional<Intersection> intersectWith(const Ray& r) const override
     {
         Ray ray = r.copyWith(position, rotation);
 

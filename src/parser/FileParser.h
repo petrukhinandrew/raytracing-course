@@ -53,10 +53,6 @@ public:
             while (iss >> arg)
             {
                 args.push_back(arg);
-                if (iss.peek() == ',')
-                {
-                    iss.ignore();
-                }
             }
 
             if (command == "NEW_PRIMITIVE")
@@ -68,30 +64,30 @@ public:
                 continue;
             }
 
+            if (command == "ELLIPSOID")
+            {
+                scene.addEllipsoid();
+            }
+            if (command == "PLANE")
+            {
+                scene.addPlane();
+            }
+            if (command == "BOX")
+            {
+                scene.addBox();
+            }
+
             auto lightCommand = LightCommandFactory::createCommand(command, args);
             if (lightCommand != nullptr)
             {
-                lightCommand->execute(scene.currentLight);
+                lightCommand->execute(scene.currentLight());
                 continue;
             }
 
             auto primitiveCommand = PrimitiveCommandFactory::createCommand(command, args);
             if (primitiveCommand != nullptr)
             {
-                if (command == "ELLIPSOID")
-                {
-                    scene.addEllipsoid();
-                }
-                if (command == "PLANE")
-                {
-                    scene.addPlane();
-                }
-                if (command == "BOX")
-                {
-                    scene.addBox();
-                }
-
-                primitiveCommand->execute(scene.currentPrimitive);
+                primitiveCommand->execute(scene.currentPrimitive());
                 continue;
             }
             else

@@ -35,7 +35,7 @@ public:
             }
         }
     }
-    std::optional<Intersection> findIntersection(Ray &ray, float maxDistance = std::numeric_limits<float>::max(), bool ignoreLight = false)
+    std::optional<Intersection> findIntersection(Ray ray, float maxDistance = std::numeric_limits<float>::max(), bool ignoreLight = false)
     {
         if (ray.depth <= 0)
         {
@@ -238,9 +238,9 @@ public:
         camera.setDimensions(glm::vec2{width, height});
     }
 
-    void setBgColor(Scene::Color_t color) override
+    void setBgColor(glm::vec3 color) override
     {
-        bg_color = std::move(color);
+        bg_color = color;
     }
 
     void updateCameraFovY() override
@@ -275,7 +275,7 @@ public:
 private:
     int width, height, rayDepth;
     PixelData pixels;
-    Scene::Color_t bg_color;
+    glm::vec3 bg_color;
 
     glm::uvec3 normal_to_rgb(glm::vec3 val)
     {

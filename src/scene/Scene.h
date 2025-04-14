@@ -13,12 +13,11 @@
 class Scene
 {
 public:
-    using Color_t = glm::vec3;
     using Pixel = glm::uvec3;
     using PixelData = std::vector<std::vector<Pixel>>;
 
     virtual void setDimensions(int width, int height) = 0;
-    virtual void setBgColor(Color_t color) = 0;
+    virtual void setBgColor(glm::vec3 color) = 0;
     virtual int getWidth() const = 0;
     virtual int getHeight() const = 0;
     virtual void setRayDepth(int depth) = 0;
@@ -31,10 +30,14 @@ public:
     virtual void updateCameraFovY() = 0;
 
     std::vector<LightSource *> lightSources;
-    LightSource *currentLight;
+    LightSource *currentLight() const {
+        return lightSources.back();
+    }
 
     std::vector<Primitive *> primitives;
-    Primitive *currentPrimitive;
+    Primitive *currentPrimitive() const {
+        return primitives.back();
+    }
 
     glm::vec3 ambientLight = {0.f, 0.f, 0.f};
 
@@ -45,25 +48,21 @@ public:
 
     void addLightSource()
     {
-        currentLight = new LightSource();
-        lightSources.push_back(currentLight);
+        lightSources.push_back(new LightSource());
     }
 
     void addEllipsoid()
     {
-        currentPrimitive = new Ellipsoid();
-        primitives.push_back(currentPrimitive);
+        primitives.push_back(new Ellipsoid());
     }
 
     void addBox()
     {
-        currentPrimitive = new Box();
-        primitives.push_back(currentPrimitive);
+        primitives.push_back(new Box());
     }
     void addPlane()
     {
-        currentPrimitive = new Plane();
-        primitives.push_back(currentPrimitive);
+        primitives.push_back(new Plane());
     }
     virtual ~Scene() = default;
 };

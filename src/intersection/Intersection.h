@@ -5,5 +5,5 @@
 typedef struct {
     glm::vec3 normal, color;
     float dist;
-    bool isInside;
+    bool isInside = false;
 } Intersection;

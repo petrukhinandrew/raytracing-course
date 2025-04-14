@@ -20,7 +20,7 @@ private:
 class SetColorCommand : public PrimitiveCommand
 {
 public:
-    SetColorCommand(const glm::vec3 &color) : color(color) {}
+    SetColorCommand(const glm::vec3 &c) : color(c) {}
 
     void execute(Primitive *primitive) override
     {

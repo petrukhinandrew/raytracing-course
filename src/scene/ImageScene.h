@@ -35,7 +35,7 @@ public:
             }
         }
     }
-    std::optional<Intersection> findIntersection(Ray ray, float maxDistance = std::numeric_limits<float>::max(), bool ignoreLight = false)
+    std::optional<Intersection> findIntersection(Ray &ray, float maxDistance = std::numeric_limits<float>::max(), bool ignoreLight = false)
     {
         if (ray.depth <= 0)
         {

@@ -52,8 +52,9 @@ public:
         ray.depth -= 1;
 
         Intersection closestIntersection{
-            .dist = maxDistance,
             .color = {0.0f, 0.0f, 0.0f},
+            .normal = {0.0f, 0.0f, 0.0f},
+            .dist = maxDistance,
             .isInside = false,
         };
 

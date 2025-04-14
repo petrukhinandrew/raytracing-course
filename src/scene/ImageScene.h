@@ -40,9 +40,9 @@ public:
         if (ray.depth <= 0)
         {
             Intersection noIntersection{
-                .dist = maxDistance,
                 .normal = {1.0f, 0.0f, 0.0f},
                 .color = {0.0f, 0.0f, 0.0f},
+                .dist = maxDistance,
                 .isInside = false,
             };
 

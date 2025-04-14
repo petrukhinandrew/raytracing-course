@@ -34,15 +34,15 @@ private:
 class BgColorCommand : public Command
 {
 public:
-    BgColorCommand(float r, float g, float b) : red(r), green(g), blue(b) {}
+    BgColorCommand(const glm::vec3 c) : color(c) {}
 
     void execute(Scene &s) override
     {
-        s.setBgColor(glm::vec3{red, green, blue});
+        s.setBgColor(color);
     }
 
 private:
-    float red, green, blue;
+    glm::vec3 color;
 };
 
 class RayDepthCommand : public Command
@@ -62,7 +62,7 @@ private:
 class AmbientLightCommand : public Command
 {
 public:
-    AmbientLightCommand(glm::vec3 c) : color(c) {}
+    AmbientLightCommand(const glm::vec3 &c) : color(c) {}
 
     void execute(Scene &s) override
     {
@@ -76,7 +76,7 @@ private:
 class CameraPositionCommand : public Command
 {
 public:
-    CameraPositionCommand(glm::vec3 pos) : position(pos) {}
+    CameraPositionCommand(const glm::vec3 &pos) : position(pos) {}
 
     void execute(Scene &s) override
     {
@@ -90,7 +90,7 @@ private:
 class CameraRightCommand : public Command
 {
 public:
-    CameraRightCommand(glm::vec3 d) : dir(d) {}
+    CameraRightCommand(const glm::vec3 &d) : dir(d) {}
 
     void execute(Scene &s) override
     {
@@ -104,7 +104,7 @@ private:
 class CameraUpCommand : public Command
 {
 public:
-    CameraUpCommand(glm::vec3 d) : dir(d) {}
+    CameraUpCommand(const glm::vec3 &d) : dir(d) {}
 
     void execute(Scene &s) override
     {
@@ -118,7 +118,7 @@ private:
 class CameraForwardCommand : public Command
 {
 public:
-    CameraForwardCommand(glm::vec3 d) : dir(d) {}
+    CameraForwardCommand(const glm::vec3 &d) : dir(d) {}
 
     void execute(Scene &s) override
     {
@@ -177,7 +177,7 @@ private:
         };
         mapping["BG_COLOR"] = [](const std::vector<float> &args)
         {
-            return new BgColorCommand(args[0], args[1], args[2]);
+            return new BgColorCommand(glm::vec3(args[0], args[1], args[2]));
         };
         mapping["CAMERA_POSITION"] = [](const std::vector<float> &args)
         {

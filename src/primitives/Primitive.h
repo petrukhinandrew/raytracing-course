@@ -5,27 +5,29 @@
 #include <optional>
 #include "glm.hpp"
 #include "Material.h"
+#include "intersection/Intersection.h"
 #include "ray/Ray.h"
 
 class Primitive
 {
 public:
-    Primitive() {
-
+    Primitive()
+    {
     }
     glm::vec3 position = {0.0, 0.0, 0.0};
     glm::vec3 color = {0.0, 0.0, 0.0};
     glm::quat rotation = glm::quat(1.0, 0.0, 0.0, 0.0);
     glm::quat inv_rotation = glm::quat(1.0, 0.0, 0.0, 0.0);
+    float ior = 1;
     Material material = Material::Diffuse;
 
-    virtual std::optional<float> isIntersectedBy(Ray r) = 0;
+    virtual std::optional<Intersection> intersectWith(Ray r) = 0;
     virtual ~Primitive() = default;
 };
 
 class PrimitiveCommand
 {
 public:
-    virtual void execute(Primitive* primitive) {}
+    virtual void execute(Primitive *primitive) {}
     virtual ~PrimitiveCommand() = default;
 };

@@ -13,6 +13,8 @@
 #include "primitives/Plane.h"
 #include "primitives/Ellipsoid.h"
 #include "primitives/PrimitiveCommandFactory.h"
+#include "lights/LightSource.h"
+#include "lights/LightCommandFactory.h"
 
 class CommandParser
 {
@@ -56,8 +58,22 @@ public:
                     iss.ignore();
                 }
             }
+
             if (command == "NEW_PRIMITIVE")
                 continue;
+
+            if (command == "NEW_LIGHT")
+            {
+                scene.addLightSource();
+                continue;
+            }
+
+            auto lightCommand = LightCommandFactory::createCommand(command, args);
+            if (lightCommand != nullptr)
+            {
+                lightCommand->execute(scene.currentLight);
+                continue;
+            }
 
             auto primitiveCommand = PrimitiveCommandFactory::createCommand(command, args);
             if (primitiveCommand != nullptr)
@@ -76,6 +92,7 @@ public:
                 }
 
                 primitiveCommand->execute(scene.currentPrimitive);
+                continue;
             }
             else
             {

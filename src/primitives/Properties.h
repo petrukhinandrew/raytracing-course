@@ -31,6 +31,41 @@ private:
     glm::vec3 color;
 };
 
+class SetDielectricCommand : public PrimitiveCommand
+{
+public:
+    SetDielectricCommand() {}
+
+    void execute(Primitive *primitive) override
+    {
+        primitive->material = Material::Dielectric;
+    }
+};
+
+class SetMetallicCommand : public PrimitiveCommand
+{
+public:
+    SetMetallicCommand() {}
+
+    void execute(Primitive *primitive) override
+    {
+        primitive->material = Material::Metallic;
+    }
+};
+
+class SetIORCommand : public PrimitiveCommand
+{
+public:
+    SetIORCommand(float r) : ior(r) {}
+    void execute(Primitive *primitive)
+    {
+        primitive->ior = ior;
+    }
+
+private:
+    float ior;
+};
+
 class SetRotationCommand : public PrimitiveCommand
 {
 public:

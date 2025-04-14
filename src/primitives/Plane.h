@@ -8,7 +8,7 @@ public:
     Plane() : normal({0, 0, 0}) {}
     Plane(glm::vec3 n) : normal(n) {}
 
-    std::optional<float> isIntersectedBy(Ray r) override
+    std::optional<Intersection> intersectWith(Ray r) override
     {
         Ray ray = r.copyWith(position, rotation);
 
@@ -19,7 +19,18 @@ public:
             return std::nullopt;
         }
 
-        return std::make_optional(t);
+        Intersection i;
+        i.color = color;
+        i.dist = t;
+        i.normal = rotation * normal;
+
+        if (dot(ray.direction, normal) > 0)
+        {
+            i.isInside = true;
+            i.normal = -i.normal;
+        }
+
+        return std::make_optional(i);
     }
 
     glm::vec3 normal;

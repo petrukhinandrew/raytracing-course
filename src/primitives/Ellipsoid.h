@@ -10,10 +10,9 @@ public:
     Ellipsoid() : radius({0, 0, 0}) {}
     Ellipsoid(glm::vec3 r) : radius(r) {}
 
-    std::optional<float> isIntersectedBy(Ray r) override
+    std::optional<Intersection> intersectWith(Ray r) override
     {
         Ray ray = r.copyWith(position, inv_rotation);
-
         glm::vec3 o_div_radius = ray.start_position / radius;
         glm::vec3 direction_div_radius = ray.direction / radius;
 
@@ -25,25 +24,30 @@ public:
 
         if (discriminant < 0.0f)
         {
-            return std::nullopt; // No intersection
+            return std::nullopt;
         }
 
         discriminant = std::sqrt(discriminant);
         float t1 = (-b - discriminant) / (2.f * a);
         float t2 = (-b + discriminant) / (2.f * a);
 
-        // If both intersection points are negative, the intersection is behind the ray
         if (t2 < 0)
         {
-            return std::nullopt; // No valid intersection
+            return std::nullopt;
         }
 
-        // Return the closest intersection point that is in front of the ray
+        Intersection i;
+        i.color = color;
+
         if (t1 < 0)
         {
-            t1 = t2; // If t1 is negative, use t2
+            t1 = t2;
+            i.isInside = true;
         }
-        return std::make_optional(t1);
+        i.dist = t1;
+        i.normal = glm::normalize((ray.start_position + i.dist * ray.direction) / (radius * radius));
+        i.normal = rotation * (i.isInside ? -i.normal : i.normal);
+        return std::make_optional(i);
     }
 
     glm::vec3 radius;

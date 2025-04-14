@@ -40,6 +40,18 @@ public:
         {
             return new SetRotationCommand(glm::vec4{args[0], args[1], args[2], args[3]});
         }
+        else if (commandType == "DIELECTRIC" && args.size() == 0)
+        {
+            return new SetDielectricCommand();
+        }
+        else if (commandType == "METALLIC" && args.size() == 0)
+        {
+            return new SetMetallicCommand();
+        }
+        else if (commandType == "IOR" && args.size() == 1)
+        {
+            return new SetIORCommand(args[0]);
+        }
         return nullptr;
     }
 };

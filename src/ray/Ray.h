@@ -12,9 +12,12 @@ public:
 
     Ray copyWith(glm::vec3 delta, glm::quat rotation)
     {
-        return Ray(rotation * (start_position - delta), rotation * direction);
+        auto newRay = Ray(rotation * (start_position - delta), rotation * direction);
+        newRay.depth = depth;
+        return newRay;
     }
 
     glm::vec3 start_position;
     glm::vec3 direction;
+    int depth = 1;
 };

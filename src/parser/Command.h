@@ -10,106 +10,149 @@
 #include <unordered_map>
 #include <scene/Scene.h>
 
-class Command {
+class Command
+{
 public:
-    virtual void execute(Scene& s) { }
+    virtual void execute(Scene &s) {}
     virtual ~Command() = default;
 };
 
-class DimensionsCommand : public Command {
+class DimensionsCommand : public Command
+{
 public:
     DimensionsCommand(float w, float h) : width(w), height(h) {}
-    
-    void execute(Scene& s) override {
+
+    void execute(Scene &s) override
+    {
         s.setDimensions(width, height);
     }
+
 private:
     int width, height;
 };
 
-class BgColorCommand : public Command {
+class BgColorCommand : public Command
+{
 public:
     BgColorCommand(float r, float g, float b) : red(r), green(g), blue(b) {}
 
-    void execute(Scene& s) override {
-        s.setBgColor(glm::vec3{ red, green, blue });
+    void execute(Scene &s) override
+    {
+        s.setBgColor(glm::vec3{red, green, blue});
     }
+
 private:
     float red, green, blue;
 };
 
-class RayDepthCommand: public Command {
-public: 
-    RayDepthCommand(float d): depth(d) { }
+class RayDepthCommand : public Command
+{
+public:
+    RayDepthCommand(int d) : depth(d) {}
 
-    void execute(Scene& s) override {
-        
+    void execute(Scene &s) override
+    {
+        s.setRayDepth(depth);
     }
+
 private:
     int depth;
 };
 
-class CameraPositionCommand : public Command {
+class AmbientLightCommand : public Command
+{
+public:
+    AmbientLightCommand(glm::vec3 c) : color(c) {}
+
+    void execute(Scene &s) override
+    {
+        s.ambientLight = color;
+    }
+
+private:
+    glm::vec3 color;
+};
+
+class CameraPositionCommand : public Command
+{
 public:
     CameraPositionCommand(glm::vec3 pos) : position(pos) {}
 
-    void execute(Scene& s) override {
+    void execute(Scene &s) override
+    {
         s.initializeCamera(position);
     }
+
 private:
     glm::vec3 position;
 };
 
-class CameraRightCommand : public Command {
+class CameraRightCommand : public Command
+{
 public:
     CameraRightCommand(glm::vec3 d) : dir(d) {}
 
-    void execute(Scene& s) override {
+    void execute(Scene &s) override
+    {
         s.camera.setRight(dir);
     }
+
 private:
     glm::vec3 dir;
 };
 
-class CameraUpCommand : public Command {
+class CameraUpCommand : public Command
+{
 public:
-    CameraUpCommand(glm::vec3 d): dir(d) {}
+    CameraUpCommand(glm::vec3 d) : dir(d) {}
 
-    void execute(Scene& s) override {
+    void execute(Scene &s) override
+    {
         s.camera.setUp(dir);
     }
+
 private:
     glm::vec3 dir;
 };
 
-class CameraForwardCommand : public Command {
+class CameraForwardCommand : public Command
+{
 public:
     CameraForwardCommand(glm::vec3 d) : dir(d) {}
 
-    void execute(Scene& s) override {
+    void execute(Scene &s) override
+    {
         s.camera.setForward(dir);
     }
+
 private:
     glm::vec3 dir;
 };
 
-class CameraFovXCommand : public Command {
+class CameraFovXCommand : public Command
+{
 public:
     CameraFovXCommand(float fov) : fovX(fov) {}
 
-    void execute(Scene& s) override {
+    void execute(Scene &s) override
+    {
         s.camera.setFovX(fovX);
     }
+
 private:
     float fovX;
 };
 
-class CommandFactory {
-    using commandMapping_t = std::unordered_map<std::string, std::function<Command*(const std::vector<float>&)>>;
+class CommandFactory
+{
+    using commandMapping_t = std::unordered_map<std::string, std::function<Command *(const std::vector<float> &)>>;
+
 public:
-    static Command* createCommand(const std::string& command, const std::vector<float>& args) {
+    static Command *createCommand(const std::string &command, const std::vector<float> &args)
+    {
         auto it = commandMap.find(command);
-        if (it != commandMap.end()) {
+        if (it != commandMap.end())
+        {
             return it->second(args);
         }
         // std::cout << "cannot parse " << command << std::endl;
@@ -117,30 +160,43 @@ public:
     }
 
 private:
-    static commandMapping_t command_init() {
+    static commandMapping_t command_init()
+    {
         commandMapping_t mapping = commandMapping_t();
-        mapping["DIMENSIONS"] = [](const std::vector<float>& args) {
+        mapping["DIMENSIONS"] = [](const std::vector<float> &args)
+        {
             return new DimensionsCommand(args[0], args[1]);
         };
-        mapping["RAY_DEPTH"] = [](const std::vector<float>& args) {
-            return new RayDepthCommand(args[0]);
+        mapping["RAY_DEPTH"] = [](const std::vector<float> &args)
+        {
+            return new RayDepthCommand(static_cast<int>(args[0]));
         };
-        mapping["BG_COLOR"] = [](const std::vector<float>& args) {
+        mapping["AMBIENT_LIGHT"] = [](const std::vector<float> &args)
+        {
+            return new AmbientLightCommand(glm::vec3(args[0], args[1], args[2]));
+        };
+        mapping["BG_COLOR"] = [](const std::vector<float> &args)
+        {
             return new BgColorCommand(args[0], args[1], args[2]);
         };
-        mapping["CAMERA_POSITION"] = [](const std::vector<float>& args) {
+        mapping["CAMERA_POSITION"] = [](const std::vector<float> &args)
+        {
             return new CameraPositionCommand(glm::vec3(args[0], args[1], args[2]));
         };
-        mapping["CAMERA_RIGHT"] = [](const std::vector<float>& args) {
+        mapping["CAMERA_RIGHT"] = [](const std::vector<float> &args)
+        {
             return new CameraRightCommand(glm::vec3(args[0], args[1], args[2]));
         };
-        mapping["CAMERA_UP"] = [](const std::vector<float>& args) {
+        mapping["CAMERA_UP"] = [](const std::vector<float> &args)
+        {
             return new CameraUpCommand(glm::vec3(args[0], args[1], args[2]));
         };
-        mapping["CAMERA_FORWARD"] = [](const std::vector<float>& args) {
+        mapping["CAMERA_FORWARD"] = [](const std::vector<float> &args)
+        {
             return new CameraForwardCommand(glm::vec3(args[0], args[1], args[2]));
         };
-        mapping["CAMERA_FOV_X"] = [](const std::vector<float>& args) {
+        mapping["CAMERA_FOV_X"] = [](const std::vector<float> &args)
+        {
             return new CameraFovXCommand(args[0]);
         };
         return mapping;
@@ -151,6 +207,7 @@ private:
 
 CommandFactory::commandMapping_t CommandFactory::commandMap = CommandFactory::command_init();
 
-struct DataType {
+struct DataType
+{
     std::unique_ptr<Command> command;
 };

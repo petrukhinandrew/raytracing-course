@@ -8,10 +8,10 @@ class Box : public virtual Primitive
 public:
     Box() : sizes({0, 0, 0}) {}
     Box(const glm::vec3 s) : sizes(s) {}
-    std::optional<float> isIntersectedBy(Ray r) override
+    std::optional<Intersection> intersectWith(Ray r) override
     {
         Ray ray = r.copyWith(position, inv_rotation);
-
+        
         glm::vec3 t1 = (-sizes - ray.start_position) / ray.direction;
         glm::vec3 t2 = (sizes - ray.start_position) / ray.direction;
 
@@ -35,13 +35,42 @@ public:
         {
             return std::nullopt;
         }
+        
+        Intersection i;
+        i.color = color;
 
         if (t1_max < 0)
         {
             t1_max = t2_min;
+            i.isInside = true;
+        }
+        i.dist = t1_max;
+        i.normal = (ray.start_position + i.dist * ray.direction) / sizes;
+
+        float max_distance = 0.0;
+        int max_index = 0;
+        if (std::abs(i.normal.x) >= max_distance) {
+            max_distance = std::abs(i.normal.x);
+            max_index = 0;
+        }
+        if (std::abs(i.normal.y) >= max_distance) {
+            max_distance = std::abs(i.normal.y);
+            max_index = 1;
+        }
+        if (std::abs(i.normal.z) >= max_distance) {
+            max_distance = std::abs(i.normal.z);
+            max_index = 2;
         }
 
-        return std::make_optional(t1_max);
+        i.normal.x = (0 == max_index) ? (i.normal.x > 0.0 ? 1.0 : -1.0) : 0.0;
+        i.normal.y = (1 == max_index) ? (i.normal.y > 0.0 ? 1.0 : -1.0) : 0.0;
+        i.normal.z = (2 == max_index) ? (i.normal.z > 0.0 ? 1.0 : -1.0) : 0.0;
+        i.normal = glm::normalize(i.normal);
+
+        i.normal = rotation * (i.isInside ? -i.normal : i.normal);
+
+
+        return std::make_optional(i);
     }
 
     glm::vec3 sizes;

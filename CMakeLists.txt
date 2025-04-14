@@ -12,6 +12,9 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 
 add_executable(${PROJECT_NAME}
     src/main.cpp
+    src/intersection/Intersection.h
+    src/lights/LightSource.h
+    src/lights/LightCommandFactory.h
     src/image_writer/ImageWriter.h
     src/image_writer/NetPbmImageWriter.h
     src/parser/Command.h

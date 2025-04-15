@@ -1,11 +1,7 @@
 #pragma once
 
-#include <fstream>
-#include <iostream>
 #include <memory>
 #include <scene/Scene.h>
-#include <sstream>
-#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>

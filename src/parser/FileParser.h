@@ -3,14 +3,10 @@
 #include "Command.h"
 #include "lights/LightCommandFactory.h"
 #include "lights/LightSource.h"
-#include "primitives/Ellipsoid.h"
-#include "primitives/Plane.h"
 #include "primitives/Primitive.h"
 #include "primitives/PrimitiveCommandFactory.h"
-#include <cassert>
 #include <fstream>
 #include <iostream>
-#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <string>

@@ -1,11 +1,12 @@
 #pragma once
 
 #include "ray/Ray.h"
-#include <iostream>
+#include <random>
 
 class Camera {
     public:
     Camera () : position (0), right (0), up (0), forward (0), fov (0) {
+        rand.seed(std::random_device{} ());
     }
 
     void setDimensions (const glm::ivec2 dims) {
@@ -37,9 +38,11 @@ class Camera {
     }
 
     Ray trace (glm::vec2 pixel) {
-        glm::vec3 pos{ (2.f * ((float)(pixel.x) + 0.5f) / (float)(dimensions.x) - 1.0f) *
+        auto dx = gen(rand);
+        auto dy = gen(rand);
+        glm::vec3 pos{ (2.f * ((float)(pixel.x) + dx) / (float)(dimensions.x) - 1.0f) *
             fov.x,
-            -(2.f * ((float)(pixel.y) + 0.5f) / (float)(dimensions.y) - 1.0f) *
+            -(2.f * ((float)(pixel.y) + dy) / (float)(dimensions.y) - 1.0f) *
             fov.y,
             1 };
 
@@ -49,6 +52,8 @@ class Camera {
     }
 
     private:
+    std::minstd_rand rand;
+    std::uniform_real_distribution<float> gen;
     glm::vec3 position;
     glm::vec3 right;
     glm::vec3 up;

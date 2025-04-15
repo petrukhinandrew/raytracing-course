@@ -13,7 +13,6 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 
 add_executable(${PROJECT_NAME}
     src/main.cpp
-    src/intersection/Intersection.h
     src/lights/LightSource.h
     src/lights/LightCommandFactory.h
     src/image_writer/ImageWriter.h
@@ -23,6 +22,7 @@ add_executable(${PROJECT_NAME}
     src/camera/Camera.h
     src/scene/Scene.h
     src/scene/ImageScene.h
+    src/scene/ImageScene.cpp
     src/ray/Ray.h
     src/primitives/Plane.h
     src/primitives/Ellipsoid.h
@@ -32,6 +32,7 @@ add_executable(${PROJECT_NAME}
     src/primitives/Properties.h
     src/primitives/PrimitiveCommandFactory.h
 )
+
 
 target_include_directories(
     ${PROJECT_NAME} PUBLIC glm

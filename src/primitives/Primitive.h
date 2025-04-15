@@ -1,9 +1,18 @@
 #pragma once
 
 #include "Material.h"
-#include "intersection/Intersection.h"
 #include "ray/Ray.h"
+#include <limits>
 #include <optional>
+
+class Primitive;
+
+typedef struct {
+    glm::vec3 normal, color = { 0, 0, 0 };
+    float dist           = std::numeric_limits<float>::max ();
+    bool isInside        = false;
+    Primitive* primitive = nullptr;
+} Intersection;
 
 class Primitive {
     public:

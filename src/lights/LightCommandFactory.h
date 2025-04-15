@@ -1,106 +1,93 @@
 #pragma once
 
 #include "LightSource.h"
-#include <memory>
-#include <unordered_map>
 #include <functional>
+#include <unordered_map>
 #include <vector>
 
-class LightPositionCommand : public LightSourceCommand
-{
-public:
-    LightPositionCommand(const glm::vec3 &pos) : position(pos) {}
-
-    void execute(LightSource *lightSource) const override
-    {
-        lightSource->position = position;
-        lightSource->kind = LightSourceKind::Positional;
+class LightPositionCommand : public LightSourceCommand {
+    public:
+    LightPositionCommand (const glm::vec3& pos) : position (pos) {
     }
 
-private:
+    void execute (LightSource* lightSource) const override {
+        lightSource->position = position;
+        lightSource->kind     = LightSourceKind::Positional;
+    }
+
+    private:
     glm::vec3 position;
 };
 
-class LightDirectionCommand : public LightSourceCommand
-{
-public:
-    LightDirectionCommand(const glm::vec3 &dir) : direction(dir) {}
-
-    void execute(LightSource *lightSource) const override
-    {
-        lightSource->direction = direction;
-        lightSource->kind = LightSourceKind::Directional;
+class LightDirectionCommand : public LightSourceCommand {
+    public:
+    LightDirectionCommand (const glm::vec3& dir) : direction (dir) {
     }
 
-private:
+    void execute (LightSource* lightSource) const override {
+        lightSource->direction = direction;
+        lightSource->kind      = LightSourceKind::Directional;
+    }
+
+    private:
     glm::vec3 direction;
 };
 
-class LightAttenuationCommand : public LightSourceCommand
-{
-public:
-    LightAttenuationCommand(const glm::vec3 &a) : attenuation(a) {}
-
-    void execute(LightSource *lightSource) const override
-    {
-        lightSource->attenuation = attenuation;
-        lightSource->kind = LightSourceKind::Positional;
+class LightAttenuationCommand : public LightSourceCommand {
+    public:
+    LightAttenuationCommand (const glm::vec3& a) : attenuation (a) {
     }
 
-private:
-    glm::vec3 attenuation;
+    void execute (LightSource* lightSource) const override {
+        lightSource->attenuation = attenuation;
+        lightSource->kind        = LightSourceKind::Positional;
+    }
 
+    private:
+    glm::vec3 attenuation;
 };
 
-class LightIntensityCommand : public LightSourceCommand
-{
-public:
-    LightIntensityCommand(const glm::vec3 &c) : color(c) {}
+class LightIntensityCommand : public LightSourceCommand {
+    public:
+    LightIntensityCommand (const glm::vec3& c) : color (c) {
+    }
 
-    void execute(LightSource *lightSource) const override
-    {
+    void execute (LightSource* lightSource) const override {
         lightSource->intensity = color;
     }
 
-private:
+    private:
     glm::vec3 color;
-
 };
 
-class LightCommandFactory
-{
-public:
-    using commandMapping_t = std::unordered_map<std::string, std::function<LightSourceCommand*(const std::vector<float>)>>;
+class LightCommandFactory {
+    public:
+    using commandMapping_t =
+    std::unordered_map<std::string, std::function<LightSourceCommand*(const std::vector<float>)>>;
 
-    static LightSourceCommand *createCommand(const std::string &command, const std::vector<float> &args)
-    {
-        auto it = commandMap.find(command);
-        if (it != commandMap.end())
-        {
-            return it->second(args);
+    static LightSourceCommand*
+    createCommand (const std::string& command, const std::vector<float>& args) {
+        auto it = commandMap.find (command);
+        if (it != commandMap.end ()) {
+            return it->second (args);
         }
         return nullptr;
     }
 
-private:
-    static commandMapping_t command_init()
-    {
+    private:
+    static commandMapping_t command_init () {
         commandMapping_t mapping;
-        mapping["LIGHT_POSITION"] = [](const std::vector<float> &args)
-        {
-            return new LightPositionCommand(glm::vec3(args[0], args[1], args[2]));
+        mapping["LIGHT_POSITION"] = [] (const std::vector<float>& args) {
+            return new LightPositionCommand (glm::vec3 (args[0], args[1], args[2]));
         };
-        mapping["LIGHT_DIRECTION"] = [](const std::vector<float> &args) 
-        {
-            return new LightDirectionCommand(glm::vec3(args[0], args[1], args[2]));
+        mapping["LIGHT_DIRECTION"] = [] (const std::vector<float>& args) {
+            return new LightDirectionCommand (glm::vec3 (args[0], args[1], args[2]));
         };
-        mapping["LIGHT_INTENSITY"] = [](const std::vector<float> &args)
-        {
-            return new LightIntensityCommand(glm::vec3(args[0], args[1], args[2]));
+        mapping["LIGHT_INTENSITY"] = [] (const std::vector<float>& args) {
+            return new LightIntensityCommand (glm::vec3 (args[0], args[1], args[2]));
         };
-        mapping["LIGHT_ATTENUATION"] = [](const std::vector<float> &args)
-        {
-            return new LightAttenuationCommand(glm::vec3(args[0], args[1], args[2]));
+        mapping["LIGHT_ATTENUATION"] = [] (const std::vector<float>& args) {
+            return new LightAttenuationCommand (glm::vec3 (args[0], args[1], args[2]));
         };
         return mapping;
     }
@@ -108,4 +95,5 @@ private:
     static commandMapping_t commandMap;
 };
 
-LightCommandFactory::commandMapping_t LightCommandFactory::commandMap = LightCommandFactory::command_init();
+LightCommandFactory::commandMapping_t LightCommandFactory::commandMap =
+LightCommandFactory::command_init ();

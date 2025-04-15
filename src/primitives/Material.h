@@ -1,8 +1,3 @@
 #pragma once
 
-enum class Material
-{
-    Diffuse,
-    Dielectric,
-    Metallic
-};
+enum class Material { Diffuse, Dielectric, Metallic };

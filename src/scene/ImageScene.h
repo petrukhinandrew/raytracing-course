@@ -56,6 +56,7 @@ private:
   glm::vec3 handleDiffuseMaterial(const Ray& ray, const Intersection& intersection, const Primitive* primitive);
   glm::vec3 handleDielectricMaterial(const Ray& ray, const Intersection& intersection, const Primitive* primitive);
   glm::vec3 handleMetallicMaterial(const Ray& ray, const Intersection& intersection, const Primitive* primitive);
+  glm::vec3 sampleDirectLighting(const Ray& ray, const Intersection& intersection, const Primitive* primitive);
   Ray createRayFromIntersection(const Ray& originalRay, const Intersection& intersection, const glm::vec3& direction);
 
 

@@ -62,9 +62,59 @@ Ray ImageScene::createRayFromIntersection(const Ray& originalRay, const Intersec
     return Ray(originalRay.start_position + originalRay.direction * intersection.dist + shift * direction, direction);
 }
 
-glm::vec3 ImageScene::handleDiffuseMaterial(const Ray &ray,
-                                           const Intersection &intersection,
-                                           const Primitive *primitive) {
+glm::vec3 ImageScene::sampleDirectLighting(const Ray& ray, const Intersection& intersection, const Primitive* primitive) {
+    glm::vec3 directLighting = glm::vec3(0.0f);
+    glm::vec3 hitPoint = ray.start_position + ray.direction * intersection.dist;
+    
+    // Sample emissive primitives
+    for (const auto& emissivePrimitive : primitives) {
+        // Skip non-emissive primitives
+        if (emissivePrimitive->emission == glm::vec3(0.0f)) {
+            continue;
+        }
+        
+        // Skip self-emission
+        if (emissivePrimitive == primitive) {
+            continue;
+        }
+        
+        // For now, we'll treat all emissive primitives as point lights
+        glm::vec3 lightPoint = emissivePrimitive->position;
+        glm::vec3 lightDir = glm::normalize(lightPoint - hitPoint);
+        
+        // Check if the light is visible
+        Ray shadowRay(hitPoint + intersection.normal * shift, lightDir);
+        std::optional<Intersection> shadowIntersection = findIntersection(shadowRay, glm::length(lightPoint - hitPoint));
+        
+        if (!shadowIntersection.has_value()) {
+            // Calculate the BRDF value based on material type
+            float brdf = 1.0f;
+            if (primitive->material == Material::Diffuse) {
+                brdf = glm::max(0.0f, glm::dot(intersection.normal, lightDir)) / M_PI;
+            } else if (primitive->material == Material::Metallic) {
+                glm::vec3 halfVector = glm::normalize(-ray.direction + lightDir);
+                brdf = glm::max(0.0f, glm::dot(intersection.normal, lightDir)) * 
+                       glm::max(0.0f, glm::dot(intersection.normal, halfVector));
+            }
+            
+            // Calculate the light contribution
+            float distanceSquared = glm::length(lightPoint - hitPoint) * glm::length(lightPoint - hitPoint);
+            float lightArea = 1.0f; // Treat as point light for now
+            
+            directLighting += primitive->color * emissivePrimitive->emission * brdf * 
+                            glm::max(0.0f, glm::dot(intersection.normal, lightDir)) /
+                            (distanceSquared * lightArea);
+        }
+    }
+    
+    return directLighting;
+}
+
+glm::vec3 ImageScene::handleDiffuseMaterial(const Ray& ray, const Intersection& intersection, const Primitive* primitive) {
+    // Add direct lighting contribution
+    glm::vec3 directLighting = sampleDirectLighting(ray, intersection, primitive);
+    
+    // Continue with existing indirect lighting
     float r1 = gen(rand);
     float r2 = gen(rand);
     float phi = 2.0f * M_PI * r1;
@@ -85,7 +135,7 @@ glm::vec3 ImageScene::handleDiffuseMaterial(const Ray &ray,
     Ray reflection = createRayFromIntersection(ray, intersection, reflectionDirection);
     reflection.depth = ray.depth - 1;
     
-    return primitive->emission + primitive->color * collectColor(reflection);
+    return primitive->emission + primitive->color * (directLighting + collectColor(reflection));
 }
 
 glm::vec3 ImageScene::handleDielectricMaterial(const Ray &ray,
@@ -143,13 +193,13 @@ glm::vec3 ImageScene::handleDielectricMaterial(const Ray &ray,
     return refractedColor;
 }
 
-glm::vec3 ImageScene::handleMetallicMaterial(const Ray &ray,
-                                             const Intersection &intersection,
-                                             const Primitive *primitive) {
-  glm::vec3 position = ray.start_position + ray.direction * intersection.dist +
-                       intersection.normal * shift;
-  return primitive->emission +
-         primitive->color * reflect(position, intersection.normal, ray);
+glm::vec3 ImageScene::handleMetallicMaterial(const Ray& ray, const Intersection& intersection, const Primitive* primitive) {
+    // Add direct lighting contribution
+    glm::vec3 directLighting = sampleDirectLighting(ray, intersection, primitive);
+    
+    // Continue with existing reflection
+    glm::vec3 position = ray.start_position + ray.direction * intersection.dist + intersection.normal * shift;
+    return primitive->emission + primitive->color * (directLighting + reflect(position, intersection.normal, ray));
 }
 
 glm::vec3 ImageScene::collectColor(const Ray &ray) {

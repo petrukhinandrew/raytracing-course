@@ -14,6 +14,13 @@ public:
 
   void render() override;
 
+  std::optional<Intersection>
+  findIntersection(const Ray &ray,
+                   const float maxDistance = std::numeric_limits<float>::max());
+
+  glm::vec3 reflect(const glm::vec3 &pos, const glm::vec3 &normal, const Ray &r);
+  glm::vec3 collectColor(const Ray &ray);
+
   Pixel getPixel(int x, int y) override { return pixels[y][x]; }
 
   void setDimensions(int width, int height) override {
@@ -43,34 +50,14 @@ private:
   PixelData pixels;
   glm::vec3 bg_color;
 
-  std::optional<Intersection>
-  findIntersection(const Ray &ray,
-                   const float maxDistance = std::numeric_limits<float>::max());
+  glm::vec3 processPixel(const glm::ivec2& pixel_position);
+  void storePixelColor(const glm::ivec2& pixel_position, const glm::vec3& color);
+  glm::vec3 calculateReflectionDirection(const glm::vec3& direction, const glm::vec3& normal);
+  glm::vec3 handleDiffuseMaterial(const Ray& ray, const Intersection& intersection, const Primitive* primitive);
+  glm::vec3 handleDielectricMaterial(const Ray& ray, const Intersection& intersection, const Primitive* primitive);
+  glm::vec3 handleMetallicMaterial(const Ray& ray, const Intersection& intersection, const Primitive* primitive);
+  Ray createRayFromIntersection(const Ray& originalRay, const Intersection& intersection, const glm::vec3& direction);
 
-  glm::vec3 reflect(const glm::vec3 &pos, const glm::vec3 &normal,
-                    const Ray &r);
-
-  glm::vec3 collectColor(const Ray &ray);
-
-  glm::vec3 processPixel(const glm::ivec2 &pixel_position);
-
-  void storePixelColor(const glm::ivec2 &pixel_position,
-                       const glm::vec3 &color);
-
-  glm::vec3 calculateReflectionDirection(const glm::vec3 &direction,
-                                         const glm::vec3 &normal);
-
-  glm::vec3 handleDiffuseMaterial(const Ray &ray,
-                                  const Intersection &intersection,
-                                  const Primitive *primitive);
-
-  glm::vec3 handleDielectricMaterial(const Ray &ray,
-                                     const Intersection &intersection,
-                                     const Primitive *primitive);
-
-  glm::vec3 handleMetallicMaterial(const Ray &ray,
-                                   const Intersection &intersection,
-                                   const Primitive *primitive);
 
   glm::uvec3 normal_to_rgb(glm::vec3 val) {
     glm::uvec3 res = glm::round(glm::clamp(val * 255.f, 0.f, 255.f));

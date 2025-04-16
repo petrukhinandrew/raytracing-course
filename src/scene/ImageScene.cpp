@@ -58,17 +58,34 @@ glm::vec3 ImageScene::reflect(const glm::vec3 &pos, const glm::vec3 &normal,
   return collectColor(reflectedRay);
 }
 
+Ray ImageScene::createRayFromIntersection(const Ray& originalRay, const Intersection& intersection, const glm::vec3& direction) {
+    return Ray(originalRay.start_position + originalRay.direction * intersection.dist + shift * direction, direction);
+}
+
 glm::vec3 ImageScene::handleDiffuseMaterial(const Ray &ray,
-                                            const Intersection &intersection,
-                                            const Primitive *primitive) {
-  auto reflectionDirection = glm::sphericalRand(1.f);
-  Ray reflection(ray.start_position + ray.direction * intersection.dist +
-                     shift * intersection.normal,
-                 reflectionDirection);
-  reflection.depth = ray.depth - 1;
-  return primitive->emission +
-         collectColor(reflection) * primitive->color * 2.f *
-             dot(reflectionDirection, intersection.normal);
+                                           const Intersection &intersection,
+                                           const Primitive *primitive) {
+    float r1 = gen(rand);
+    float r2 = gen(rand);
+    float phi = 2.0f * M_PI * r1;
+    float cosTheta = std::sqrt(1.0f - r2);
+    float sinTheta = std::sqrt(r2);
+    
+    glm::vec3 w = intersection.normal;
+    glm::vec3 u = glm::normalize(glm::cross(
+        (std::abs(w.x) > 0.1f ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0)), w));
+    glm::vec3 v = glm::cross(w, u);
+    
+    glm::vec3 reflectionDirection = glm::normalize(
+        u * std::cos(phi) * sinTheta +
+        v * std::sin(phi) * sinTheta +
+        w * cosTheta
+    );
+    
+    Ray reflection = createRayFromIntersection(ray, intersection, reflectionDirection);
+    reflection.depth = ray.depth - 1;
+    
+    return primitive->emission + primitive->color * collectColor(reflection);
 }
 
 glm::vec3 ImageScene::handleDielectricMaterial(const Ray &ray,
@@ -117,15 +134,13 @@ glm::vec3 ImageScene::handleDielectricMaterial(const Ray &ray,
     return reflect(position, intersection.normal, ray);
   }
 
-  Ray refractedRay(ray.start_position + ray.direction * intersection.dist -
-                       shift * intersection.normal,
-                   refractedDirection);
-  refractedRay.depth = ray.depth - 1;
-  auto refractedColor = collectColor(refractedRay);
-  if (intersection.isInside && refractedColor != bg_color) {
-    refractedColor *= primitive->color;
-  }
-  return refractedColor;
+    Ray refractedRay = createRayFromIntersection(ray, intersection, refractedDirection);
+    refractedRay.depth = ray.depth - 1;
+    auto refractedColor = collectColor(refractedRay);
+    if (intersection.isInside && refractedColor != bg_color) {
+        refractedColor *= primitive->color;
+    }
+    return refractedColor;
 }
 
 glm::vec3 ImageScene::handleMetallicMaterial(const Ray &ray,
